@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2021 at 07:59 PM
+-- Generation Time: Sep 25, 2021 at 06:52 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -90,7 +90,8 @@ CREATE TABLE `diagnosis` (
 
 CREATE TABLE `diagnostic_unit` (
   `unitID` int(11) NOT NULL,
-  `unit_name` varchar(30) NOT NULL
+  `unit_name` varchar(30) NOT NULL,
+  `managed_by` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -103,9 +104,6 @@ CREATE TABLE `doctor` (
   `employeeID` int(11) NOT NULL,
   `DEA_no` varchar(10) NOT NULL,
   `specility` varchar(100) DEFAULT NULL,
-  `name` varchar(30) NOT NULL,
-  `working_status` char(1) NOT NULL DEFAULT 'P',
-  `contact_no` varchar(12) NOT NULL,
   `med_council_reg_no` varchar(10) NOT NULL,
   `medC_joined_date` date NOT NULL DEFAULT curdate(),
   `medC_resigned_date` date NOT NULL DEFAULT curdate()
@@ -137,6 +135,22 @@ CREATE TABLE `emegency_contact` (
   `relationship` varchar(30) NOT NULL,
   `contact_no` varchar(12) NOT NULL,
   `address` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee`
+--
+
+CREATE TABLE `employee` (
+  `employeeID` int(11) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `working_status` char(1) NOT NULL DEFAULT 'F',
+  `contact_no` varchar(12) NOT NULL,
+  `address` varchar(50) NOT NULL,
+  `type` varchar(15) NOT NULL,
+  `job_type` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -208,31 +222,12 @@ CREATE TABLE `login_credentials` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `non_medical_staff`
---
-
-CREATE TABLE `non_medical_staff` (
-  `employeeID` int(11) NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `type` varchar(15) DEFAULT NULL,
-  `working_status` char(1) NOT NULL DEFAULT 'F',
-  `address` varchar(50) DEFAULT NULL,
-  `contact_no` varchar(12) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `nurse`
 --
 
 CREATE TABLE `nurse` (
   `employeeID` int(11) NOT NULL,
-  `name` varchar(30) NOT NULL,
   `med_council_reg_no` varchar(10) NOT NULL,
-  `working_status` char(1) NOT NULL DEFAULT 'F',
-  `address` varchar(50) NOT NULL,
-  `contact_no` varchar(12) NOT NULL,
   `medC_joined_date` date NOT NULL DEFAULT curdate(),
   `medC_resigned_date` date NOT NULL DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -362,6 +357,18 @@ CREATE TABLE `treatment` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `unit_employee`
+--
+
+CREATE TABLE `unit_employee` (
+  `employeeID` int(11) NOT NULL,
+  `unitID` int(11) NOT NULL,
+  `hours_per_week` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `vendor`
 --
 
@@ -380,7 +387,20 @@ CREATE TABLE `vendor` (
 
 CREATE TABLE `word` (
   `wordID` int(11) NOT NULL,
-  `word_name` varchar(25) DEFAULT NULL
+  `word_name` varchar(25) DEFAULT NULL,
+  `managed_by` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `word_employee`
+--
+
+CREATE TABLE `word_employee` (
+  `employeeID` int(11) NOT NULL,
+  `wordID` int(11) NOT NULL,
+  `hours_per_week` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -424,7 +444,8 @@ ALTER TABLE `diagnosis`
 -- Indexes for table `diagnostic_unit`
 --
 ALTER TABLE `diagnostic_unit`
-  ADD PRIMARY KEY (`unitID`);
+  ADD PRIMARY KEY (`unitID`),
+  ADD KEY `diagnostic_unit_ibfk_1` (`managed_by`);
 
 --
 -- Indexes for table `doctor`
@@ -443,6 +464,12 @@ ALTER TABLE `drug`
 --
 ALTER TABLE `emegency_contact`
   ADD PRIMARY KEY (`patientID`);
+
+--
+-- Indexes for table `employee`
+--
+ALTER TABLE `employee`
+  ADD PRIMARY KEY (`employeeID`);
 
 --
 -- Indexes for table `insurence`
@@ -469,12 +496,6 @@ ALTER TABLE `in_patient_daily_record`
 -- Indexes for table `login_credentials`
 --
 ALTER TABLE `login_credentials`
-  ADD PRIMARY KEY (`employeeID`);
-
---
--- Indexes for table `non_medical_staff`
---
-ALTER TABLE `non_medical_staff`
   ADD PRIMARY KEY (`employeeID`);
 
 --
@@ -545,6 +566,13 @@ ALTER TABLE `treatment`
   ADD PRIMARY KEY (`treatmentID`);
 
 --
+-- Indexes for table `unit_employee`
+--
+ALTER TABLE `unit_employee`
+  ADD PRIMARY KEY (`employeeID`,`unitID`),
+  ADD KEY `unitID` (`unitID`);
+
+--
 -- Indexes for table `vendor`
 --
 ALTER TABLE `vendor`
@@ -554,7 +582,15 @@ ALTER TABLE `vendor`
 -- Indexes for table `word`
 --
 ALTER TABLE `word`
-  ADD PRIMARY KEY (`wordID`);
+  ADD PRIMARY KEY (`wordID`),
+  ADD KEY `word_ibfk_1` (`managed_by`);
+
+--
+-- Indexes for table `word_employee`
+--
+ALTER TABLE `word_employee`
+  ADD PRIMARY KEY (`employeeID`,`wordID`),
+  ADD KEY `wordID` (`wordID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -579,28 +615,16 @@ ALTER TABLE `diagnostic_unit`
   MODIFY `unitID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `doctor`
---
-ALTER TABLE `doctor`
-  MODIFY `employeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
-
---
 -- AUTO_INCREMENT for table `drug`
 --
 ALTER TABLE `drug`
   MODIFY `drugCode` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `non_medical_staff`
+-- AUTO_INCREMENT for table `employee`
 --
-ALTER TABLE `non_medical_staff`
-  MODIFY `employeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
-
---
--- AUTO_INCREMENT for table `nurse`
---
-ALTER TABLE `nurse`
-  MODIFY `employeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1001;
+ALTER TABLE `employee`
+  MODIFY `employeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- AUTO_INCREMENT for table `patient`
@@ -640,7 +664,7 @@ ALTER TABLE `word`
 -- Constraints for table `attendent`
 --
 ALTER TABLE `attendent`
-  ADD CONSTRAINT `attendent_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `non_medical_staff` (`employeeID`) ON DELETE CASCADE;
+  ADD CONSTRAINT `attendent_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`employeeID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `bed`
@@ -652,7 +676,7 @@ ALTER TABLE `bed`
 -- Constraints for table `cleaner`
 --
 ALTER TABLE `cleaner`
-  ADD CONSTRAINT `cleaner_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `non_medical_staff` (`employeeID`) ON DELETE CASCADE;
+  ADD CONSTRAINT `cleaner_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`employeeID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `diagnose`
@@ -661,6 +685,18 @@ ALTER TABLE `diagnose`
   ADD CONSTRAINT `diagnose_ibfk_1` FOREIGN KEY (`diagnosisCode`) REFERENCES `diagnosis` (`diagnosisCode`),
   ADD CONSTRAINT `diagnose_ibfk_2` FOREIGN KEY (`patientID`) REFERENCES `patient` (`patientID`),
   ADD CONSTRAINT `diagnose_ibfk_3` FOREIGN KEY (`diagnosed_by`) REFERENCES `doctor` (`employeeID`);
+
+--
+-- Constraints for table `diagnostic_unit`
+--
+ALTER TABLE `diagnostic_unit`
+  ADD CONSTRAINT `diagnostic_unit_ibfk_1` FOREIGN KEY (`managed_by`) REFERENCES `employee` (`employeeID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `doctor`
+--
+ALTER TABLE `doctor`
+  ADD CONSTRAINT `doctor_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`employeeID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `emegency_contact`
@@ -690,12 +726,10 @@ ALTER TABLE `in_patient_daily_record`
   ADD CONSTRAINT `in_patient_daily_record_ibfk_2` FOREIGN KEY (`recorded_by`) REFERENCES `nurse` (`employeeID`) ON DELETE NO ACTION;
 
 --
--- Constraints for table `login_credentials`
+-- Constraints for table `nurse`
 --
-ALTER TABLE `login_credentials`
-  ADD CONSTRAINT `login_credentials_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `doctor` (`employeeID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `login_credentials_ibfk_2` FOREIGN KEY (`employeeID`) REFERENCES `nurse` (`employeeID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `login_credentials_ibfk_3` FOREIGN KEY (`employeeID`) REFERENCES `non_medical_staff` (`employeeID`) ON DELETE CASCADE;
+ALTER TABLE `nurse`
+  ADD CONSTRAINT `nurse_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`employeeID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `out_patient`
@@ -744,6 +778,26 @@ ALTER TABLE `treat`
   ADD CONSTRAINT `treat_ibfk_1` FOREIGN KEY (`treatmentID`) REFERENCES `treatment` (`treatmentID`),
   ADD CONSTRAINT `treat_ibfk_2` FOREIGN KEY (`patientID`) REFERENCES `patient` (`patientID`),
   ADD CONSTRAINT `treat_ibfk_3` FOREIGN KEY (`treated_by`) REFERENCES `doctor` (`employeeID`);
+
+--
+-- Constraints for table `unit_employee`
+--
+ALTER TABLE `unit_employee`
+  ADD CONSTRAINT `unit_employee_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`employeeID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `unit_employee_ibfk_2` FOREIGN KEY (`unitID`) REFERENCES `diagnostic_unit` (`unitID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `word`
+--
+ALTER TABLE `word`
+  ADD CONSTRAINT `word_ibfk_1` FOREIGN KEY (`managed_by`) REFERENCES `employee` (`employeeID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `word_employee`
+--
+ALTER TABLE `word_employee`
+  ADD CONSTRAINT `word_employee_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`employeeID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `word_employee_ibfk_2` FOREIGN KEY (`wordID`) REFERENCES `word` (`wordID`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
