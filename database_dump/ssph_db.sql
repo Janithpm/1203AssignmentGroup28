@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 25, 2021 at 06:52 AM
+-- Generation Time: Oct 02, 2021 at 08:33 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -103,7 +103,7 @@ CREATE TABLE `diagnostic_unit` (
 CREATE TABLE `doctor` (
   `employeeID` int(11) NOT NULL,
   `DEA_no` varchar(10) NOT NULL,
-  `specility` varchar(100) DEFAULT NULL,
+  `speciality` varchar(100) DEFAULT NULL,
   `med_council_reg_no` varchar(10) NOT NULL,
   `medC_joined_date` date NOT NULL DEFAULT curdate(),
   `medC_resigned_date` date NOT NULL DEFAULT curdate()
@@ -218,6 +218,17 @@ CREATE TABLE `login_credentials` (
   `pwd` varchar(50) NOT NULL,
   `type` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `login_credentials`
+--
+
+INSERT INTO `login_credentials` (`employeeID`, `usr_name`, `pwd`, `type`) VALUES
+(1000, 'sysAdmin', 'admin', 'MANG'),
+(1001, 'madarasingheJP', 'J1001', 'MANG'),
+(1002, 'ManoharanK', 'K1002', 'NUR'),
+(1003, 'madushanAKDT', 'A1003', 'DOC'),
+(1004, 'mathangadeeraDD', 'D1004', 'MANG');
 
 -- --------------------------------------------------------
 
@@ -541,7 +552,7 @@ ALTER TABLE `patient_assign_to`
 -- Indexes for table `supply`
 --
 ALTER TABLE `supply`
-  ADD PRIMARY KEY (`drugCode`,`regNo`),
+  ADD PRIMARY KEY (`drugCode`,`regNo`,`supply_date`) USING BTREE,
   ADD KEY `regNo` (`regNo`);
 
 --
@@ -600,7 +611,7 @@ ALTER TABLE `word_employee`
 -- AUTO_INCREMENT for table `bed`
 --
 ALTER TABLE `bed`
-  MODIFY `bedID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `bedID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `diagnosis`
@@ -612,31 +623,31 @@ ALTER TABLE `diagnosis`
 -- AUTO_INCREMENT for table `diagnostic_unit`
 --
 ALTER TABLE `diagnostic_unit`
-  MODIFY `unitID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `unitID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `drug`
 --
 ALTER TABLE `drug`
-  MODIFY `drugCode` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `drugCode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `employeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `employeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1007;
 
 --
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `patientID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `patientID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10019;
 
 --
 -- AUTO_INCREMENT for table `test`
 --
 ALTER TABLE `test`
-  MODIFY `testCode` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `testCode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `treatment`
@@ -648,13 +659,13 @@ ALTER TABLE `treatment`
 -- AUTO_INCREMENT for table `vendor`
 --
 ALTER TABLE `vendor`
-  MODIFY `regNo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `regNo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `word`
 --
 ALTER TABLE `word`
-  MODIFY `wordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `wordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- Constraints for dumped tables
@@ -748,7 +759,7 @@ ALTER TABLE `out_patient_record`
 -- Constraints for table `patient_admit`
 --
 ALTER TABLE `patient_admit`
-  ADD CONSTRAINT `patient_admit_ibfk_1` FOREIGN KEY (`patientID`) REFERENCES `in_patient` (`patientID`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `patient_admit_ibfk_1` FOREIGN KEY (`patientID`) REFERENCES `patient` (`patientID`) ON DELETE NO ACTION,
   ADD CONSTRAINT `patient_admit_ibfk_2` FOREIGN KEY (`admited_by`) REFERENCES `doctor` (`employeeID`) ON DELETE NO ACTION;
 
 --
