@@ -64,7 +64,7 @@ if (isset($_POST['btn-delete'])) {
         ?>
             <div class="d-flex align-items-center justify-content-center" style="min-height:400px; width:100%;">
                 <?php
-                $sq = "SELECT * FROM bed";
+                $sq = "SELECT * FROM bed ORDER BY bedID";
                 $result = mysqli_query($conn, $sq);
                 if (mysqli_num_rows($result) > 0) {
                 ?>

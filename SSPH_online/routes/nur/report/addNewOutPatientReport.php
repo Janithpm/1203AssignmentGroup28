@@ -3,21 +3,21 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/config/dbConn.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/customFunc/textBoxValue.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/components/inputElement.php');
-
+date_default_timezone_set("Asia/Colombo");
 if (isset($_POST['btn-add-out-patient-report'])) {
 
     $query = "";
     $patientID = textboxValue("patientID");
     $recorded_by = textboxValue("recorded_by");
-    $recorded_date = textboxValue("recorded_date");
-    $recorded_time = textboxValue("recorded_time");
+    $recorded_date = textboxValue("recorded_date") ? textboxValue("recorded_date") : date("Y-m-d");
+    $recorded_time = textboxValue("recorded_time") ? textboxValue("recorded_time") : date("h:i:sa");
     $patient_pulse = textboxValue("patient_pulse");
     $patient_blood_presure = textboxValue("patient_blood_presure");
     $patinet_weight = textboxValue("patient_weight");
     $patient_temperature = textboxValue("patient_temperature");
     $patient_symptoms = textboxValue("patient_symptoms");
 
-    $query = "INSERT INTO in_patient_daily_record (patientID, recorded_date, recorded_time, pulse, blood_presure, weight, temperature, symptoms, recorded_by) VALUES ($patientID, '$recorded_date', '$recorded_time', $patient_pulse, $patient_blood_presure, $patinet_weight, $patient_temperature, '$patient_symptoms', $recorded_by )";
+    $query = "INSERT INTO out_patient_record (patientID, recorded_date, recorded_time, pulse, blood_presure, weight, temperature, symptoms, recorded_by) VALUES ($patientID, '$recorded_date', '$recorded_time', $patient_pulse, $patient_blood_presure, $patinet_weight, $patient_temperature, '$patient_symptoms', $recorded_by )";
     if (mysqli_query($conn, $query)) {
 ?>
         <script>
@@ -31,10 +31,8 @@ if (isset($_POST['btn-add-out-patient-report'])) {
 }
 
 ?>
-
-
 <div class="card mt-3 shadow">
-    <h5 class="card-header">ADD NEW IN PATIENT REPORT</h5>
+    <h5 class="card-header">ADD NEW OUT PATIENT REPORT</h5>
     <div class="card-body">
         <h5 class="card-title">Enter The Details : </h5>
         <div class="d-flex justify-content-center mt-3">
@@ -80,7 +78,7 @@ if (isset($_POST['btn-add-out-patient-report'])) {
                 </div>
 
                 <?php buttonElement("btn-add-out-patient-report", "btn btn-primary", "Submit", "btn-add-out-patient-report", "") ?>
-                <a onclick="displayReportIN()" class="btn btn-danger">Cancel</a>
+                <a onclick="displayViewEmp()" class="btn btn-danger">Cancel</a>
 
             </form>
         </div>
@@ -88,8 +86,8 @@ if (isset($_POST['btn-add-out-patient-report'])) {
 </div>
 
 <script>
-    function displayReportIN() {
+    function displayViewEmp() {
+        document.getElementById('addNewOutP').style = 'display: none';
         document.getElementById('viewReport').style = 'display: block';
-        document.getElementById('addNewInP').style = 'display: none';
     }
 </script>

@@ -9,36 +9,20 @@ $USER = getSessionData();
 
 if (isset($_GET['btn-select'])) {
     $values = explode(" ", $_GET['btn-select']);
-    $patient_type = $values[0];
-    $patinetID = $values[1];
-    $recorded_date = $values[2];
-    $recorded_time = $values[3];
-
-    $sq = "SELECT name, dob FROM patient WHERE patientID = $patinetID";
+    $drugCode = $values[0];
+    $regNo = $values[1];
+    $supply_date = $values[2];
+    $sq = "SELECT * FROM supply WHERE drugCode = $drugCode AND regNo = $regNo AND supply_date = '$supply_date'";
     $result = mysqli_query($conn, $sq);
-    if (!$result) echo "patient" . $conn->error;
+    if (!$result) echo "error" . $conn->error;
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
-        $patient_name = $row['name'];
-        $patient_dob = $row['dob'];
-
-        if ($patient_type == 'IN') {
-            $sq = "SELECT * FROM in_patient_daily_record WHERE patientID = $patinetID";
-        } else {
-            $sq = "SELECT * FROM out_patient_record WHERE patientID = $patinetID";
-        }
-        $result = mysqli_query($conn, $sq);
-        if (!$result) echo "in or out patient" . $conn->error;
-
-        if (mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_assoc($result);
-            $patient_pulse = $row['pulse'];
-            $patient_blood_presure = $row['blood_presure'];
-            $patient_weight = $row['weight'];
-            $patient_temperature = $row['temperature'];
-            $patient_symptoms = $row['symptoms'];
-            $patient_recorded_by = $row['recorded_by'];
-        }
+        $drugCode = $row['drugCode'];
+        $regNo = $row['regNo'];
+        $type = $row['type'];
+        $quantity = $row['quantity'];
+        $unit_cost = $row['unit_cost'];
+        $supply_date = $row['supply_date'];
     }
 }
 ?>
@@ -74,10 +58,10 @@ if (isset($_GET['btn-select'])) {
 <body>
     <main>
         <div class="container">
-            <?php titleBox("DASHBOARD : NURSE", $USER['usr_name'], "Hello, Welcome Back", $USER['employeeID'], "dark", "../../../config/logout.php", "../nur.php", true); ?>
+            <?php titleBox("DASHBOARD : MANAGEMGNT", $USER['usr_name'], "Hello, Welcome Back", $USER['employeeID'], "dark", "../../../config/logout.php", "../supmang.php", true); ?>
 
             <div class="card mt-3 shadow">
-                <h5 class="card-header"><?php echo $patient_type ?> Patient Report</h5>
+                <h5 class="card-header">Drug Code : <?php echo $drugCode ?></h5>
                 <div class="card-body">
                     <?php
 
@@ -90,73 +74,49 @@ if (isset($_GET['btn-select'])) {
                     } else {
                     ?>
                         <div class="d-flex justify-content-end">
-                            <a href="report.php" class="btn btn-primary">Go Back</a>
+                            <a href="supplies.php" class="btn btn-primary">Go Back</a>
                         </div>
                         <div class="d-flex justify-content-center mt-3">
 
                             <table class="table table-hover">
                                 <tbody>
                                     <tr>
-                                        <td class="col-md-2">Patient ID</td>
+                                        <td class="col-md-2">Drug Code</td>
                                         <td class="col-md-1">:</td>
-                                        <td class="col-md-9"><?php echo $patinetID; ?></td>
+                                        <td class="col-md-9"><?php echo $drugCode; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Patient Name</td>
+                                        <td>Vendor Register Number</td>
                                         <td>:</td>
-                                        <td><?php echo $patient_name; ?></td>
+                                        <td><?php echo $regNo; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Recorded Date</td>
+                                        <td>Drug Type</td>
                                         <td>:</td>
-                                        <td><?php echo $recorded_date; ?></td>
+                                        <td><?php echo $type; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Recorded Time</td>
+                                        <td>Quantity</td>
                                         <td>:</td>
-                                        <td><?php echo $recorded_time; ?></td>
+                                        <td><?php echo $quantity; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Patient Date Of Birth</td>
+                                        <td>Unit Cost</td>
                                         <td>:</td>
-                                        <td><?php echo $patient_dob; ?></td>
+                                        <td><?php echo $unit_cost; ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Recorded BY</td>
+                                        <td>Total Cost</td>
                                         <td>:</td>
-                                        <td><?php echo $patient_recorded_by; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><?php echo (float)($quantity) * $unit_cost; ?></td>
                                     </tr>
 
                                     <tr>
-                                        <td>Pulse</td>
+                                        <td>Supply Date</td>
                                         <td>:</td>
-                                        <td><?php echo $patient_pulse; ?></td>
+                                        <td><?php echo $supply_date; ?></td>
                                     </tr>
-                                    <tr>
-                                        <td>Blood Pressure</td>
-                                        <td>:</td>
-                                        <td><?php echo $patient_blood_presure; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight</td>
-                                        <td>:</td>
-                                        <td><?php echo $patient_weight; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Temperature</td>
-                                        <td>:</td>
-                                        <td><?php echo $patient_temperature; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>symptoms</td>
-                                        <td>:</td>
-                                        <td><?php echo $patient_symptoms; ?></td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>

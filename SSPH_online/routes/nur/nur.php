@@ -61,19 +61,19 @@ if (isset($_POST['InsurancePanel'])) {
     <main>
         <div class="container">
             <?php titleBox("DASHBOARD : NURSE", $USER['usr_name'], "Hello, Welcome Back", $USER['employeeID'], "dark", "../../config/logout.php", "mang.php", false); ?>
-            <form method="post" action="">
+            <form method="post" action="" class="mt-5">
                 <div class="row" style="margin:15px 0;">
                     <div class="col-md-6" style="height: 250px;">
                         <div class="d-flex flex-column justify-content-center align-items-center bg-light m-10 h-100 rounded shadow">
-                            <h3 class="h3">Patient Management</h3>
-                            <h5 class="h5">View / Add / Update Patient Details</h5>
+                            <h5 class="h5">Patient Management</h5>
+                            <p class="p">View / Add / Update Patient Details</p>
                             <button name="PatientPanel" class="btn btn-primary" style="margin: 10px 30px;">Open Panel</button>
                         </div>
                     </div>
                     <div class="col-md-6" style="height: 250px;">
                         <div class="d-flex flex-column justify-content-center align-items-center bg-light m-10 h-100 rounded shadow">
-                            <h3 class="h3">Report Management</h3>
-                            <h5 class="h5">View / Add / Update / Report Details</h5>
+                            <h5 class="h5">Report Management</h5>
+                            <p class="p">View / Add / Update / Report Details</p>
                             <button name="ReportPanel" class="btn btn-primary" style="margin: 10px 30px;">Open Panel</button>
                         </div>
                     </div>
@@ -81,15 +81,15 @@ if (isset($_POST['InsurancePanel'])) {
                 <div class="row" style="margin:15px 0;">
                     <div class="col-md-6" style="height: 250px;">
                         <div class="d-flex flex-column justify-content-center align-items-center bg-light m-10 h-100 rounded shadow">
-                            <h3 class="h3">Emegency Contact</h3>
-                            <h5 class="h5">View / Add / Update Emegency Contact</h5>
+                            <h5 class="h5">Emegency Contact</h5>
+                            <p class="p">View / Add / Update Emegency Contact</p>
                             <button name="EmeContactPanel" class="btn btn-primary" style="margin: 10px 30px;">Open Panel</button>
                         </div>
                     </div>
                     <div class="col-md-6" style="height: 250px;">
                         <div class="d-flex flex-column justify-content-center align-items-center bg-light m-10 h-100 rounded shadow">
-                            <h3 class="h3">Insurance Details</h3>
-                            <h5 class="h5">View / Add / Update / Insurence Details</h5>
+                            <h5 class="h5">Insurance Details</h5>
+                            <p class="p">View / Add / Update / Insurence Details</p>
                             <button name="InsurancePanel" class="btn btn-primary" style="margin: 10px 30px;">Open Panel</button>
                         </div>
                     </div>
